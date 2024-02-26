@@ -1,2 +1,2 @@
-# space-invaders
+# space invaders
 joguinho em C com raylib.
