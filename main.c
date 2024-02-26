@@ -3,6 +3,10 @@
 #include <math.h>
 #include <stdlib.h> 
 
+typedef struct {
+    Vector2 position;
+    Texture2D texture;
+} Rocket;
 
 int main() {
     
@@ -13,9 +17,12 @@ int main() {
 
     InitWindow(screenWidth, screenHeight, "exes invaders");
 
-    Vector2 rocketPosition = { (float)2*screenWidth/3, (float)2*screenHeight/3 };
+    Rocket rocket;
+    Vector2 rocket_pos = { (float)2*screenWidth/3, (float)2*screenHeight/3 };
+    rocket.position = rocket_pos;
+    rocket.texture = LoadTexture("assets/rocket-pixel.png");
+
     Vector2 joePosition = { (float)100, (float)100 };
-    Texture2D rocket = LoadTexture("assets/rocket-pixel.png");
     Texture2D joe = LoadTexture("assets/joe-pixel.png");
     
     int invaders_direction = 1;
@@ -28,10 +35,8 @@ int main() {
     {
         // Update
         //----------------------------------------------------------------------------------
-        if (IsKeyDown(KEY_RIGHT)) rocketPosition.x += 2.0f;
-        if (IsKeyDown(KEY_LEFT)) rocketPosition.x -= 2.0f;
-        if (IsKeyDown(KEY_UP)) rocketPosition.y -= 2.0f;
-        if (IsKeyDown(KEY_DOWN)) rocketPosition.y += 2.0f;
+        if (IsKeyDown(KEY_RIGHT)) rocket.position.x += 2.0f;
+        if (IsKeyDown(KEY_LEFT)) rocket.position.x -= 2.0f;
         
         
         if(joePosition.x == screenWidth-300) invaders_direction = 0;
@@ -47,7 +52,7 @@ int main() {
 
             ClearBackground(RAYWHITE);
 
-            DrawTextureV(rocket, rocketPosition, WHITE);
+            DrawTextureV(rocket.texture, rocket.position, WHITE);
             DrawTextureV(joe, joePosition, WHITE);
 
         EndDrawing();
@@ -56,7 +61,7 @@ int main() {
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
-    UnloadTexture(rocket);    // Unload texture
+    UnloadTexture(rocket.texture);    // Unload texture
     UnloadTexture(joe);    // Unload texture
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
