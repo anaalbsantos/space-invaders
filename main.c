@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h> 
+#include "menu.h"
 
 typedef struct {
     Vector2 position;
@@ -12,9 +13,10 @@ int main() {
     
     // Initialization
     //--------------------------------------------------------------------------------------
-    const int screenWidth = 1200;
-    const int screenHeight = 800;
+    const int screenWidth = 1640;
+    const int screenHeight = 924;
 
+    abrirMenu();
     InitWindow(screenWidth, screenHeight, "exes invaders");
 
     Rocket rocket;
