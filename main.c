@@ -17,8 +17,6 @@ int main() {
     int nivel = 1; //Indica o nível atual do jogo
 
     abrirMenu();
-    //InitWindow(screenWidth, screenHeight, "exes invaders");
-
     SetRandomSeed(time(NULL));
 
     //Setando os exes
@@ -83,10 +81,11 @@ int main() {
 
 
         //ATENÇão!!!!! Aninha eu mudei essa parte aqui pra tirar essa segunda avaliação, mas não sei se isso pode ter alterado alguma coisa
-            //Versão Anterior
+        //Versão Anterior
         // if(invaders_direction && joePosition.x < screenWidth-300) joePosition.x += 2.0f;
         // else if(!invaders_direction && joePosition.x > 100) joePosition.x -= 2.0f;
-            //Versão Posterior
+        
+        //Versão Posterior
         for(int i=0;i<qtd_exes;i++){
             if(invaders_direction) exes[i].position.x += 2.0f;
             else if(!invaders_direction) exes[i].position.x -= 2.0f;
