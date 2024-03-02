@@ -4,6 +4,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include "colisoes.h"
+#include "menu.h"
 
 
 int main() {
@@ -15,7 +16,8 @@ int main() {
 
     int nivel = 1; //Indica o nível atual do jogo
 
-    InitWindow(screenWidth, screenHeight, "exes invaders");
+    abrirMenu();
+    //InitWindow(screenWidth, screenHeight, "exes invaders");
 
     SetRandomSeed(time(NULL));
 
