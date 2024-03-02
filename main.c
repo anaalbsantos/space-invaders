@@ -31,7 +31,6 @@ int main() {
     Projectile_List projectile_list = {NULL, 0}; //vetor de projéteis começa como NULL e tem 0 projéteis no mapa
     Texture texture_projectiles = LoadTexture("assets/Musical_Note.png");
 
-
     //Setando o foguete/Taylor
     Rocket rocket;
     rocket.vida = 3;
@@ -60,8 +59,8 @@ int main() {
 
         // Update
         //----------------------------------------------------------------------------------
-        if (IsKeyDown(KEY_RIGHT)) rocket.position.x += 4.0f;
-        if (IsKeyDown(KEY_LEFT)) rocket.position.x -= 4.0f;
+        if (IsKeyDown(KEY_RIGHT) && rocket.position.x < screenWidth - rocket.texture.width) rocket.position.x += 4.0f;
+        if (IsKeyDown(KEY_LEFT) && rocket.position.x > 0) rocket.position.x -= 4.0f;
         if (IsKeyPressed(KEY_SPACE)) {
             projectile_list = Generate_Taylor_Projectile(rocket, projectile_list, texture_projectiles);
             printf("%d\n", projectile_list.qtd_projectile);
@@ -116,6 +115,8 @@ int main() {
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
+    free(exes);
+    free(projectile_list.projectiles);
     Unload_All_Textures(rocket, texture_projectiles, texture_exes, qtd_texture_exes);
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
