@@ -24,8 +24,11 @@ int main() {
 
     Vector2 joePosition = { (float)100, (float)100 };
     Texture2D joe = LoadTexture("assets/joe-pixel.png");
+
+    Texture2D bullet = LoadTexture("assets/bullet.png");
     
     int invaders_direction = 1;
+    int bullet_direction = 1;
 
     SetTargetFPS(80);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -37,7 +40,8 @@ int main() {
         //----------------------------------------------------------------------------------
         if (IsKeyDown(KEY_RIGHT)) rocket.position.x += 2.0f;
         if (IsKeyDown(KEY_LEFT)) rocket.position.x -= 2.0f;
-        
+        if(IsKeyDown(KEY_SPACE)) bullet_direction = 1;
+        //else bullet_direction = 0;
         
         if(joePosition.x == screenWidth-300) invaders_direction = 0;
         else if(joePosition.x == 100) invaders_direction = 1;
@@ -54,6 +58,9 @@ int main() {
 
             DrawTextureV(rocket.texture, rocket.position, WHITE);
             DrawTextureV(joe, joePosition, WHITE);
+            //DrawTexture(bullet, 10, 10, WHITE);
+
+            if(bullet_direction) DrawTextureV(bullet, rocket.position, WHITE);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
@@ -63,6 +70,7 @@ int main() {
     //--------------------------------------------------------------------------------------
     UnloadTexture(rocket.texture);    // Unload texture
     UnloadTexture(joe);    // Unload texture
+    UnloadTexture(bullet);    // Unload texture
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
