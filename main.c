@@ -31,6 +31,7 @@ int main() {
     Projectile_List projectile_list = {NULL, 0}; //vetor de projéteis começa como NULL e tem 0 projéteis no mapa
     Texture texture_projectiles = LoadTexture("assets/Musical_Note.png");
 
+
     //Setando o foguete/Taylor
     Rocket rocket;
     rocket.vida = 3;
@@ -39,6 +40,8 @@ int main() {
     rocket.position.y = rocket_pos.y;
     rocket.texture = LoadTexture("assets/rocket-pixel.png");
 
+    int pontuacao = 0;
+    char *string_pontuacao = "0";
 
     float intervalo = 5, tempo = 5; //Tempo pra uma nave atirar
     int invaders_direction = 1;
@@ -59,8 +62,8 @@ int main() {
 
         // Update
         //----------------------------------------------------------------------------------
-        if (IsKeyDown(KEY_RIGHT) && rocket.position.x < screenWidth - rocket.texture.width) rocket.position.x += 4.0f;
-        if (IsKeyDown(KEY_LEFT) && rocket.position.x > 0) rocket.position.x -= 4.0f;
+        if (IsKeyDown(KEY_RIGHT)) rocket.position.x += 4.0f;
+        if (IsKeyDown(KEY_LEFT)) rocket.position.x -= 4.0f;
         if (IsKeyPressed(KEY_SPACE)) {
             projectile_list = Generate_Taylor_Projectile(rocket, projectile_list, texture_projectiles);
             printf("%d\n", projectile_list.qtd_projectile);
@@ -96,6 +99,10 @@ int main() {
 
         //Essa variável collision não faz nada mas eu imaginei que as check_collision podiam exigir que um valor inteiro fosse retornado em alguma outra parta do código (sim, isso é uma gambiarra)
         int collision = Check_Collision_Projectiles_Exes(&exes, &qtd_exes, &projectile_list);
+        if(collision) { 
+            pontuacao++;
+            string_pontuacao = TextFormat("%d", pontuacao);
+        }
         collision = Check_Projectiles_Boundaries(&projectile_list, screenWidth, screenHeight);
 
         printf("%d\n", projectile_list.qtd_projectile);
@@ -105,6 +112,8 @@ int main() {
 
             ClearBackground(RAYWHITE);
             //DrawRectangleRec(teste, BLUE);
+            DrawText("Pontuação: ", 1250, 20, 50, BLACK);
+            DrawText(string_pontuacao, 1250 + MeasureText("Pontuacao: ", 50), 15, 60, RED);
             DrawTextureV(rocket.texture, (Vector2){rocket.position.x, rocket.position.y}, WHITE); //Casting pq rocket agora é um Rectangle e drawTexture só aceita Vector2D
             Draw_Exes(exes, qtd_exes);
             Draw_Projectiles(projectile_list);
@@ -115,8 +124,6 @@ int main() {
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
-    free(exes);
-    free(projectile_list.projectiles);
     Unload_All_Textures(rocket, texture_projectiles, texture_exes, qtd_texture_exes);
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
