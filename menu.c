@@ -11,10 +11,10 @@ int abrirMenu(){
     //Sound Menu = LoadSound("./Assets/21 - Dream.wav");
     //SetSoundVolume(Menu, 0.18);
 
-    InitWindow(screen_width, screen_height , "raylib [core] example - keyboard input");
+    InitWindow(screen_width, screen_height , "exes invaders");
 
-    Texture2D menu = LoadTexture("./Assets/Menu.png");        // Carrega as texturas a partir de imagens da galeria
-    Texture2D tutorial = LoadTexture("./Assets/Tutorial.png");
+    Texture2D menu = LoadTexture("./assets/Menu.png");        // Carrega as texturas a partir de imagens da galeria
+    Texture2D tutorial = LoadTexture("./assets/Tutorial.png");
     SetTargetFPS(60);
     
     //PlaySound(Menu);
@@ -38,35 +38,26 @@ int abrirMenu(){
         }
 
     }
-        
-        //StopSound(Menu);
-        //CloseWindow();
 
-        return fechar;
+    return fechar;
 }
 
 
-void abrirGameOver(int **morreu, Sound **Tema){
-    
-    StopSound(**Tema);
+void gameOver(){
 
-    const int screen_weight = 1600;
-    const int screen_height = 800;
-    Texture2D GameOver = LoadTexture("./Assets/GameOver.png");
-    SetTargetFPS(60);
-    **morreu = 1;
+    // const int screen_weight = 1600;
+    // const int screen_height = 800;
+    Texture2D GameOver = LoadTexture("./assets/Gameover.png");
+
 
     while(IsKeyUp(KEY_ESCAPE) && IsKeyUp(KEY_ENTER)){
         BeginDrawing();
-        DrawTexture(GameOver, screen_weight/2 - GameOver.width/2, screen_height/2 - GameOver.height/2, WHITE);
+        DrawTexture(GameOver, 0, 0, WHITE);
         EndDrawing();
-        if(IsKeyPressed(KEY_ENTER)){
-           **morreu = 0;
-        }
     }
 }
 
-void menuVitoria(int time, int* venceu, Sound* Tema){
+void gameWin(int time, int* venceu, Sound* Tema){
     if(time == 80){
         
         StopSound(*Tema);
