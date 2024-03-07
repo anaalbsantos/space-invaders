@@ -7,8 +7,42 @@
 #include "menu.h"
 
 
+#include <string.h>	/* memcpy, strlen... */
+#include <stdint.h>	/* uints types */
+#include <sys/types.h>	/* size_t ,ssize_t, off_t... */
+#include <unistd.h>	/* close() read() write() */
+#include <fcntl.h>	/* open() */
+#include <sys/ioctl.h>	/* ioctl() */
+#include <errno.h>	/* error codes */
+
+// ioctl commands defined for the pci driver header
+#include "ioctl_cmds.h"
+
 int main() {
     
+    int fd, retval;
+    fd = open("/dev/mydev", O_RDWR);
+
+	/*if (argc < 2) {
+		printf("Syntax: %s <device file path>\n", argv[0]);
+		return -EINVAL;
+	}
+
+	if (()) < 0) {
+		fprintf(stderr, "Error opening file %s\n", argv[1]);
+		return -EBUSY;
+	}*/
+	
+	unsigned int data = 0x4040BFBF;
+	ioctl(fd, WR_L_DISPLAY);
+	retval = write(fd, &data, sizeof(data));
+	printf("wrote %d bytes\n", retval);
+	
+	unsigned int rled = 0x00000000;
+	ioctl(fd, WR_RED_LEDS);
+	retval = write(fd, &rled, sizeof(data));
+	printf("wrote %d bytes\n", retval);
+	
     // Initialization
     //--------------------------------------------------------------------------------------
     const int screenWidth = 1640;
@@ -41,15 +75,41 @@ int main() {
     float intervalo = 5, tempo = 5; //Tempo pra uma nave atirar
     int invaders_direction = 1;
     SetTargetFPS(80);               // Set our game to run at 60 frames-per-second
-    //--------------------------------------------------------------------------------------
     
+	
+	
+
+    //--------------------------------------------------------------------------------------
+    int sla = 0;
+    int outro = 0;
     // game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-
-
+		sla++;
+		if(rocket.vida == 3) data = 0x40404030;
+		else if(rocket.vida == 2) data = 0x40404024;
+		else if(rocket.vida == 1) data = 0x40404079;
+		else data = 0x40404040;
         
-
+		ioctl(fd, WR_L_DISPLAY);
+		retval = write(fd, &data, sizeof(data));
+		printf("wrote %d bytes\n", retval);
+		
+		if(sla % 20 == 0){
+			if(outro == 0){
+				rled = 0x00000000;
+				outro = 1;
+			}
+			else{
+				rled = 0xFFFFFFFF;
+				outro = 0;
+			}
+			ioctl(fd, WR_RED_LEDS);
+			retval = write(fd, &rled, sizeof(data));
+			printf("wrote %d bytes\n", retval);
+		}
+		
+		
         // Update
         //----------------------------------------------------------------------------------
         if (IsKeyDown(KEY_RIGHT) && rocket.position.x < screenWidth - rocket.texture.width) rocket.position.x += 4.0f;
