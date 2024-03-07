@@ -5,7 +5,7 @@
 #include "raylib.h"
 
 int abrirMenu();
-void abrirGameOver(int **morreu, Sound **Tema);
-void menuVitoria(int time, int* venceu, Sound* Tema);
+void gameOver();
+void gameWin(int time, int* venceu, Sound* Tema);
 
 #endif

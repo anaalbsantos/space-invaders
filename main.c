@@ -34,28 +34,21 @@ int main() {
     //Setando o foguete/Taylor
     Rocket rocket;
     rocket.vida = 3;
-    Vector2 rocket_pos = { (float)2*screenWidth/3, (float)2*screenHeight/3 };
-    rocket.position.x = rocket_pos.x;
-    rocket.position.y = rocket_pos.y;
     rocket.texture = LoadTexture("assets/rocket-pixel.png");
+    rocket.position = (Rectangle){ (float)2*screenWidth/3, (float)2*screenHeight/3, rocket.texture.width, rocket.texture.height };
 
 
     float intervalo = 5, tempo = 5; //Tempo pra uma nave atirar
     int invaders_direction = 1;
     SetTargetFPS(80);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
-    //Rectangle teste = {0, 0, 50, 50}; //Testando
-    // Main game loop
+    
+    // game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-        // -------------------- Testes --------------------
-        // if (IsKeyDown(KEY_RIGHT)) teste.x += 1.0f;
-        // if (IsKeyDown(KEY_LEFT)) teste.x -= 1.0f;
-        // if (IsKeyDown(KEY_UP)) teste.y -= 1.0f;
-        // if (IsKeyDown(KEY_DOWN)) teste.y += 1.0f;
-        // printf("x = %.2f || y = %.2f\n", teste.x, teste.y);
-        // ------------------------------------------------
 
+
+        
 
         // Update
         //----------------------------------------------------------------------------------
@@ -79,12 +72,6 @@ int main() {
         }
 
 
-        //ATENÇão!!!!! Aninha eu mudei essa parte aqui pra tirar essa segunda avaliação, mas não sei se isso pode ter alterado alguma coisa
-        //Versão Anterior
-        // if(invaders_direction && joePosition.x < screenWidth-300) joePosition.x += 2.0f;
-        // else if(!invaders_direction && joePosition.x > 100) joePosition.x -= 2.0f;
-        
-        //Versão Posterior
         for(int i=0;i<qtd_exes;i++){
             if(invaders_direction) exes[i].position.x += 2.0f;
             else if(!invaders_direction) exes[i].position.x -= 2.0f;
@@ -94,9 +81,10 @@ int main() {
         projectile_list = Projectile_Movement(projectile_list);
         
 
-        //Essa variável collision não faz nada mas eu imaginei que as check_collision podiam exigir que um valor inteiro fosse retornado em alguma outra parta do código (sim, isso é uma gambiarra)
-        int collision = Check_Collision_Projectiles_Exes(&exes, &qtd_exes, &projectile_list);
-        collision = Check_Projectiles_Boundaries(&projectile_list, screenWidth, screenHeight);
+        Check_Collision_Projectiles_Exes(&exes, &qtd_exes, &projectile_list);
+        Check_Projectiles_Boundaries(&projectile_list, screenWidth, screenHeight);
+        Check_Collision_Projectiles_Rocket(&rocket, &projectile_list);
+        int game_status = Check_Game_Status(&rocket, &projectile_list, &exes, &qtd_exes);
 
         printf("%d\n", projectile_list.qtd_projectile);
         // Draw
@@ -108,6 +96,10 @@ int main() {
             DrawTextureV(rocket.texture, (Vector2){rocket.position.x, rocket.position.y}, WHITE); //Casting pq rocket agora é um Rectangle e drawTexture só aceita Vector2D
             Draw_Exes(exes, qtd_exes);
             Draw_Projectiles(projectile_list);
+            DrawText(TextFormat("Vida: %d", rocket.vida), 10, 10, 20, RED);
+            // if(game_status == 1){
+            //     gameOver();
+            // }
 
         EndDrawing();
         //----------------------------------------------------------------------------------

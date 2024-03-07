@@ -37,7 +37,8 @@ void Remove_Ex(int idx_delete, Ex **exes, int *qtd_exes); //Remove um ex do veto
 void Remove_Projectile(int idx_delete, Projectile_List *projectile_list); //Remove um projétil do vetor dinâmico de projéteis e passa pra uma posição anterior
 int Check_Projectiles_Boundaries(Projectile_List *projectile_list, int screenWidth, int screenHeight); //Vai checar de um projétil passou dos limites da tela 
 int Check_Collision_Projectiles_Exes(Ex **exes, int *qtd_exes, Projectile_List *projectile_list); //Checa a colisão entre um projétil e um ex
-
+int Check_Collision_Projectiles_Rocket(Rocket *rocket, Projectile_List *projectile_list); //Checa a colisão entre um projetil e o foguete
+int Check_Game_Status(Rocket *rocket, Projectile_List *projectile_list, Ex **exes, int *qtd_exes);
 
 void Unload_All_Textures(Rocket rocket, Texture2D texture_projectiles, Texture2D texture_exes[], int qtd_texture_exes); //Dá unload em todas as texturas
 
