@@ -18,6 +18,53 @@
 // ioctl commands defined for the pci driver header
 #include "ioctl_cmds.h"
 
+#include<stdio.h>
+#include<math.h>
+
+int digit_display(int num){
+    switch(num){
+        case 0: return 0x40;
+        case 1: return 0x79;
+        case 2: return 0x24;
+        case 3: return 0x30;
+        case 4: return 0x19;
+        case 5: return 0x12;
+        case 6: return 0x02;
+        case 7: return 0x78;
+        case 8: return 0x00;
+        case 9: return 0x18;
+        default: return 0xFF;
+    }
+}
+
+unsigned int decimal_to_display(int numero, int casas){
+    casas = casas-1;
+    unsigned int hex_resultado = 0, pow_hex=casas, casasAdicionais;
+    int digito;
+    int potencia_10 = pow(10,casas);
+    int primeiroSignificativo = 0;
+
+    while(potencia_10>0){
+        if(primeiroSignificativo==0){ //Para o caso de números menor que o núemro de casas, os displays à esquerda ficarão apagados. Em vez de mostrar no display "0003" vai ficar "   3"
+            if(numero<potencia_10) digito = -1;
+            else {
+                primeiroSignificativo = 1;
+                digito = numero/potencia_10;
+            }
+        }
+        else digito = numero/potencia_10;
+
+        casasAdicionais = pow(16, pow_hex); //Pular os primerios digitos
+        hex_resultado += pow(casasAdicionais,2) * digit_display(digito);
+        pow_hex--;
+
+        numero=numero%potencia_10;
+        potencia_10=potencia_10/10;
+    }
+    return hex_resultado;
+}
+
+
 int main() {
     
     int fd, retval;
@@ -33,8 +80,11 @@ int main() {
 		return -EBUSY;
 	}*/
 	
-	unsigned int data = 0x4040BFBF;
-	ioctl(fd, WR_L_DISPLAY);
+    
+
+    unsigned int data_qtdexes_vida;
+	unsigned int data_vida = decimal_to_display(rocket.vida);
+	ioctl(fd, WR_R_DISPLAY);
 	retval = write(fd, &data, sizeof(data));
 	printf("wrote %d bytes\n", retval);
 	
@@ -86,15 +136,23 @@ int main() {
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
 		sla++;
-		if(rocket.vida == 3) data = 0x40404030;
-		else if(rocket.vida == 2) data = 0x40404024;
-		else if(rocket.vida == 1) data = 0x40404079;
-		else data = 0x40404040;
+		// if(rocket.vida == 3) data = 0x40404030;
+		// else if(rocket.vida == 2) data = 0x40404024;
+		// else if(rocket.vida == 1) data = 0x40404079;
+		// else data = 0x40404040;
         
-		ioctl(fd, WR_L_DISPLAY);
-		retval = write(fd, &data, sizeof(data));
+        data_vida = decimal_to_display(rocket.vida,4);
+		ioctl(fd, WR_R_DISPLAY);
+		retval = write(fd, &data_vida, sizeof(data_vida));
 		printf("wrote %d bytes\n", retval);
-		
+
+        data_qtdexes_vida = decimal_to_display(rocket.vida,2);
+        data_qtdexes_vida = data_qtdexes_vida*pow(16, 4);
+        data_qtdexes_vida += decimal_to_display(qtd_exes, 2);  
+		ioctl(fd, WR_L_DISPLAY);
+		retval = write(fd, &data_qtdexes_vida, sizeof(data_qtdexes_vida));
+		printf("wrote %d bytes\n", retval);
+
 		if(sla % 20 == 0){
 			if(outro == 0){
 				rled = 0x00000000;
