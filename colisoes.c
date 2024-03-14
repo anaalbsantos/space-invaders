@@ -5,7 +5,8 @@
 
 Projectile_List Generate_Ex_Projectile(Ex ex, Projectile_List projectile_list, Texture2D Musical_Notes){
 
-    Projectile new_projectile = {{ex.position.x+71, ex.position.y+ex.texture.height, 50, 70},{0,1},Musical_Notes}; //Orientação (0,1) indica que ele não anda na direção x, só na +y (pra baixo). 71 é metade da largura da foto e 160 é um pouco maior que a altura do ex
+    Projectile new_projectile = {{ex.position.x+(ex.texture.width*0.5), ex.position.y+ex.texture.height+1, Musical_Notes.width, Musical_Notes.height},{0,1},Musical_Notes}; //Orientação (0,1) indica que ele não anda na direção x, só na +y (pra baixo). 71 é metade da largura da foto e 160 é um pouco maior que a altura do ex
+    printf("%d %d\n",ex.texture.width, ex.texture.height );
 
     projectile_list.projectiles = (Projectile *) realloc(projectile_list.projectiles, (projectile_list.qtd_projectile+1)*sizeof(Projectile));
     projectile_list.projectiles[projectile_list.qtd_projectile] = new_projectile;
@@ -15,7 +16,7 @@ Projectile_List Generate_Ex_Projectile(Ex ex, Projectile_List projectile_list, T
 
 Projectile_List Generate_Taylor_Projectile(Rocket rocket, Projectile_List projectile_list, Texture2D Musical_Notes){ //Sempre que apertar espaço essa função gera um projétil que vai para cima (0,-1) e adiciona no vetor de projéteis
 
-    Projectile new_projectile = {{rocket.position.x+10, rocket.position.y-rocket.texture.height, 50, 70},{0,-1},Musical_Notes}; //Orientação (0,-1) indica que ele não anda na direção x, só na -y (pra cima)
+    Projectile new_projectile = {{rocket.position.x+10, rocket.position.y-Musical_Notes.height-1, Musical_Notes.width, Musical_Notes.height},{0,-1},Musical_Notes}; //Orientação (0,-1) indica que ele não anda na direção x, só na -y (pra cima)
 
     projectile_list.projectiles = (Projectile *) realloc(projectile_list.projectiles, (projectile_list.qtd_projectile+1)*sizeof(Projectile));
     projectile_list.projectiles[projectile_list.qtd_projectile] = new_projectile;
@@ -42,9 +43,13 @@ void Draw_Projectiles(Projectile_List projectile_list){ //Escreve os projéteis 
 Ex *Generate_Exes(int nivel, int *qtd_exes, Texture2D textures_exes[]){ //Essa função inicializa os exes a depender da fase (a lógica disso na main ainda não tá feita :(
     Ex *exes = NULL;
     if(nivel==1){ //O vetor estático serve só pra ficar mais fácil de declarar a posição e a textura.
-        *qtd_exes = 2;
-        Ex static_exes[2] = {{{100.0,100.0, 143, 150}, textures_exes[0]}, //A posição (x, y, largura e altura) e a textura dos exes
-                             {{300.0,100.0, 143, 150}, textures_exes[0]}}; 
+        *qtd_exes = 5;
+        int a = *(qtd_exes);
+        Ex static_exes[] = {{{100.0,100.0,  textures_exes[0].width,textures_exes[0].height}, textures_exes[0]}, //A posição (x, y, largura e altura) e a textura dos exes
+                             {{300.0,100.0, textures_exes[0].width,textures_exes[0].height}, textures_exes[0]},
+                             {{500.0,100.0, textures_exes[0].width,textures_exes[0].height}, textures_exes[0]},
+                             {{700.0,100.0, textures_exes[0].width,textures_exes[0].height}, textures_exes[0]},
+                             {{900.0,100.0, textures_exes[0].width,textures_exes[0].height}, textures_exes[0]}}; 
         exes = (Ex*) malloc ((*qtd_exes)*sizeof(Ex));
         for(int i=0;i<(*qtd_exes);i++) exes[i] = static_exes[i]; //No final eu igual o vetor estático ao dinâmico (é dinâmico pq os exes vão ser mortos durante o jogo)
     }
