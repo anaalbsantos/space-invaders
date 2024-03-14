@@ -43,16 +43,16 @@ unsigned int decimal_to_display(int numero, int casas){
     int digito;
     int potencia_10 = pow(10,casas);
     int primeiroSignificativo = 0;
-
     while(potencia_10>0){
-        if(primeiroSignificativo==0){ //Para o caso de números menor que o núemro de casas, os displays à esquerda ficarão apagados. Em vez de mostrar no display "0003" vai ficar "   3"
+       /*if(primeiroSignificativo==0){ //Para o caso de números menor que o núemro de casas, os displays à esquerda ficarão apagados. Em vez de mostrar no display "0003" vai ficar "   3"
             if(numero<potencia_10) digito = -1;
             else {
                 primeiroSignificativo = 1;
                 digito = numero/potencia_10;
             }
         }
-        else digito = numero/potencia_10;
+        else */ 
+        digito = numero/potencia_10;
 
         casasAdicionais = pow(16, pow_hex); //Pular os primerios digitos
         hex_resultado += pow(casasAdicionais,2) * digit_display(digito);
@@ -70,27 +70,9 @@ int main() {
     int fd, retval;
     fd = open("/dev/mydev", O_RDWR);
 
-	/*if (argc < 2) {
-		printf("Syntax: %s <device file path>\n", argv[0]);
-		return -EINVAL;
-	}
-
-	if (()) < 0) {
-		fprintf(stderr, "Error opening file %s\n", argv[1]);
-		return -EBUSY;
-	}*/
-	
-    
-
-    unsigned int data_qtdexes_vida;
-	unsigned int data_vida = decimal_to_display(rocket.vida);
-	ioctl(fd, WR_R_DISPLAY);
-	retval = write(fd, &data, sizeof(data));
-	printf("wrote %d bytes\n", retval);
-	
 	unsigned int rled = 0x00000000;
 	ioctl(fd, WR_RED_LEDS);
-	retval = write(fd, &rled, sizeof(data));
+	retval = write(fd, &rled, sizeof(rled));
 	printf("wrote %d bytes\n", retval);
 	
     // Initialization
@@ -120,6 +102,12 @@ int main() {
     rocket.vida = 3;
     rocket.texture = LoadTexture("assets/rocket-pixel.png");
     rocket.position = (Rectangle){ (float)2*screenWidth/3, (float)2*screenHeight/3, rocket.texture.width, rocket.texture.height };
+    
+    unsigned int data_qtdexes_vida;
+	unsigned int data_vida = decimal_to_display(rocket.vida, 4);
+	ioctl(fd, WR_R_DISPLAY);
+	retval = write(fd, &data_vida, sizeof(data_vida));
+	printf("wrote %d bytes\n", retval);
 
 
     float intervalo = 5, tempo = 5; //Tempo pra uma nave atirar
@@ -132,6 +120,8 @@ int main() {
     //--------------------------------------------------------------------------------------
     int sla = 0;
     int outro = 0;
+    unsigned int score = 0, data_score = 0;
+    int var = 0, pontuacao = 5;
     // game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -141,9 +131,10 @@ int main() {
 		// else if(rocket.vida == 1) data = 0x40404079;
 		// else data = 0x40404040;
         
-        data_vida = decimal_to_display(rocket.vida,4);
+    	
+        data_score = decimal_to_display(score,4);
 		ioctl(fd, WR_R_DISPLAY);
-		retval = write(fd, &data_vida, sizeof(data_vida));
+		retval = write(fd, &data_score, sizeof(data_score));
 		printf("wrote %d bytes\n", retval);
 
         data_qtdexes_vida = decimal_to_display(rocket.vida,2);
@@ -163,7 +154,7 @@ int main() {
 				outro = 0;
 			}
 			ioctl(fd, WR_RED_LEDS);
-			retval = write(fd, &rled, sizeof(data));
+			retval = write(fd, &rled, sizeof(rled));
 			printf("wrote %d bytes\n", retval);
 		}
 		
@@ -197,9 +188,13 @@ int main() {
         //----------------------------------------------------------------------------------
 
         projectile_list = Projectile_Movement(projectile_list);
-        
-
-        Check_Collision_Projectiles_Exes(&exes, &qtd_exes, &projectile_list);
+       	
+       	var = 0;
+        var = Check_Collision_Projectiles_Exes(&exes, &qtd_exes, &projectile_list);
+        if(var == 1) {
+        	score += pontuacao;
+        	pontuacao += 5 + pontuacao*0.5;
+        }
         Check_Projectiles_Boundaries(&projectile_list, screenWidth, screenHeight);
         Check_Collision_Projectiles_Rocket(&rocket, &projectile_list);
         int game_status = Check_Game_Status(&rocket, &projectile_list, &exes, &qtd_exes);

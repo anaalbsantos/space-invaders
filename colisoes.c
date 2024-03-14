@@ -42,9 +42,13 @@ void Draw_Projectiles(Projectile_List projectile_list){ //Escreve os projéteis 
 Ex *Generate_Exes(int nivel, int *qtd_exes, Texture2D textures_exes[]){ //Essa função inicializa os exes a depender da fase (a lógica disso na main ainda não tá feita :(
     Ex *exes = NULL;
     if(nivel==1){ //O vetor estático serve só pra ficar mais fácil de declarar a posição e a textura.
-        *qtd_exes = 2;
-        Ex static_exes[2] = {{{100.0,100.0, 143, 150}, textures_exes[0]}, //A posição (x, y, largura e altura) e a textura dos exes
-                             {{300.0,100.0, 143, 150}, textures_exes[0]}}; 
+        *qtd_exes = 5;
+        int a = *(qtd_exes);
+        Ex static_exes[] = {{{100.0,100.0, 143, 150}, textures_exes[0]}, //A posição (x, y, largura e altura) e a textura dos exes
+                             {{300.0,100.0, 143, 150}, textures_exes[0]},
+                             {{500.0,100.0, 143, 150}, textures_exes[0]},
+                             {{700.0,100.0, 143, 150}, textures_exes[0]},
+                             {{900.0,100.0, 143, 150}, textures_exes[0]}}; 
         exes = (Ex*) malloc ((*qtd_exes)*sizeof(Ex));
         for(int i=0;i<(*qtd_exes);i++) exes[i] = static_exes[i]; //No final eu igual o vetor estático ao dinâmico (é dinâmico pq os exes vão ser mortos durante o jogo)
     }
