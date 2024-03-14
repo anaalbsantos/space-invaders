@@ -6,7 +6,7 @@
 Projectile_List Generate_Ex_Projectile(Ex ex, Projectile_List projectile_list, Texture2D Musical_Notes){
 
     Projectile new_projectile = {{ex.position.x+(ex.texture.width*0.5), ex.position.y+ex.texture.height+1, Musical_Notes.width, Musical_Notes.height},{0,1},Musical_Notes}; //Orientação (0,1) indica que ele não anda na direção x, só na +y (pra baixo). 71 é metade da largura da foto e 160 é um pouco maior que a altura do ex
-    printf("%d %d\n",ex.texture.width, ex.texture.height );
+    //printf("%d %d\n",ex.texture.width, ex.texture.height );
 
     projectile_list.projectiles = (Projectile *) realloc(projectile_list.projectiles, (projectile_list.qtd_projectile+1)*sizeof(Projectile));
     projectile_list.projectiles[projectile_list.qtd_projectile] = new_projectile;
