@@ -64,11 +64,23 @@ unsigned int decimal_to_display(int numero, int casas){
     return hex_resultado;
 }
 
+int *binary_transform(int numero){
+	int *vetor;
+	vetor = malloc(sizeof(int)*4);
+	for(int i = 0; i < 4; i++){
+		if(numero%2 == 1) vetor[3-i] = 1;
+		else vetor[3-i] = 0;
+		numero /= 2;
+	}
+	return vetor;
+}
+
 
 int main() {
 	
     int fd, retval;
     unsigned int data_button=0;
+    unsigned int data_switches=0;
     fd = open("/dev/mydev", O_RDWR);
 
 	unsigned int rled = 0x00000000;
@@ -120,10 +132,16 @@ int main() {
 	
 
     //--------------------------------------------------------------------------------------
+   	int total_exes = qtd_exes;
     int sla = 0;
     int outro = 0;
     unsigned int score = 0, data_score = 0;
     int var = 0, pontuacao = 5;
+    Color cor = {123,232,122,255};
+    
+    //variaveis de controle do personagem
+    int *vetor, shot = 0;
+    vetor = calloc(4, sizeof(int));
     // game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -140,9 +158,14 @@ int main() {
 		////printf("wrote %d bytes\n", retval);
 		
 		ioctl(fd, RD_PBUTTONS);
-		read(fd,&data_button,1);
-		printf("%d\n", data_button);
-
+		read(fd, &data_button,1);
+		//printf("%d\n", data_button);
+		vetor = binary_transform(data_button);
+		
+		ioctl(fd, RD_SWITCHES);
+		read(fd, &data_switches,1);
+		printf("%X\n", data_switches);
+		
         data_qtdexes_vida = decimal_to_display(rocket.vida,2);
         data_qtdexes_vida = data_qtdexes_vida*pow(16, 4);
         data_qtdexes_vida += decimal_to_display(qtd_exes, 2);  
@@ -167,17 +190,20 @@ int main() {
 		
         // Update
         //----------------------------------------------------------------------------------
-        if (IsKeyDown(KEY_RIGHT) && rocket.position.x < screenWidth - rocket.texture.width) rocket.position.x += 4.0f;
-        if (IsKeyDown(KEY_LEFT) && rocket.position.x > 0) rocket.position.x -= 4.0f;
-        if (IsKeyPressed(KEY_SPACE)) {
+        if (!vetor[3] && rocket.position.x < screenWidth - rocket.texture.width) rocket.position.x += 4.0f;
+        if (!vetor[0] && rocket.position.x > 0) rocket.position.x -= 4.0f;
+        if (!vetor[1] && !shot) {
             projectile_list = Generate_Taylor_Projectile(rocket, projectile_list, texture_projectiles);
+            shot = 1;
+
            // printf("%d\n", projectile_list.qtd_projectile);
         }
+        if(vetor[1] && shot) shot = 0;
 
         if((qtd_exes>0) && (GetTime()-aux>tempo*0.2)){ //Cada vez que se passam "intervalo" segundos uma das naves atira 
             int random_ex = GetRandomValue(0, qtd_exes-1);
             projectile_list = Generate_Ex_Projectile(exes[random_ex], projectile_list, texture_projectiles);
-            tempo+=intervalo;
+            tempo+=intervalo*(total_exes/qtd_exes);
         }
 
 
@@ -210,7 +236,15 @@ int main() {
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-            ClearBackground(RAYWHITE);
+            
+            if(data_switches==1)ClearBackground(BLUE);
+            else if(data_switches==2)ClearBackground(GREEN);
+            else if(data_switches==3)ClearBackground(RED);
+            else if(data_switches==4)ClearBackground(PURPLE);
+            else if(data_switches==5)ClearBackground(BLACK);
+            else if(data_switches==6)ClearBackground(BROWN);
+            else if(data_switches==7)ClearBackground((Color){123,232,89,255});
+            else ClearBackground(RAYWHITE);
             //DrawRectangleRec(teste, BLUE);
             DrawTextureV(rocket.texture, (Vector2){rocket.position.x, rocket.position.y}, WHITE); //Casting pq rocket agora é um Rectangle e drawTexture só aceita Vector2D
             Draw_Exes(exes, qtd_exes);
@@ -222,6 +256,8 @@ int main() {
 
         EndDrawing();
         //----------------------------------------------------------------------------------
+        if(rocket.vida==0) gameOver();
+        //if(qtd_exes==0) gameWin();
     }
 
     // De-Initialization
