@@ -12,11 +12,11 @@
 #include <sys/types.h>	/* size_t ,ssize_t, off_t... */
 #include <unistd.h>	/* close() read() write() */
 #include <fcntl.h>	/* open() */
-#include <sys/ioctl.h>	/* ioctl() */
+//#include <sys/ioctl.h>	/* ioctl() */
 #include <errno.h>	/* error codes */
 
 // ioctl commands defined for the pci driver header
-#include "ioctl_cmds.h"
+//#include "ioctl_cmds.h"
 
 #include<stdio.h>
 #include<math.h>
@@ -78,17 +78,19 @@ int *binary_transform(int numero){
 
 int main() {
 	
-    int fd, retval;
-    unsigned int data_button=0;
-    unsigned int data_switches=0;
-    fd = open("/dev/mydev", O_RDWR);
+    //placa--------------------------------------------------------------------------------------------
+    // int fd, retval;
+    // unsigned int data_button=0;
+    // unsigned int data_switches=0;
+    // fd = open("/dev/mydev", O_RDWR);
 
-	unsigned int rled = 0x00000000;
-	ioctl(fd, WR_RED_LEDS);
-	retval = write(fd, &rled, sizeof(rled));
-	printf("wrote %d bytes\n", retval);
+	// unsigned int rled = 0x00000000;
+	// ioctl(fd, WR_RED_LEDS);
+	// retval = write(fd, &rled, sizeof(rled));
+	// printf("wrote %d bytes\n", retval);
+    //------------------------------------------------------------------------------------------------
 	
-    // Initialization
+    
     //--------------------------------------------------------------------------------------
     const int screenWidth = 1640;
     const int screenHeight = 924;
@@ -117,21 +119,19 @@ int main() {
     rocket.texture = LoadTexture("assets/rocket-pixel.png");
     rocket.position = (Rectangle){ (float)2*screenWidth/3, (float)2*screenHeight/3, rocket.texture.width, rocket.texture.height };
     
-    unsigned int data_qtdexes_vida;
-	unsigned int data_vida = decimal_to_display(rocket.vida, 4);
-	ioctl(fd, WR_R_DISPLAY);
-	retval = write(fd, &data_vida, sizeof(data_vida));
+    //placa--------------------------------------------------------------------------------------------
+    // unsigned int data_qtdexes_vida;
+	// unsigned int data_vida = decimal_to_display(rocket.vida, 4);
+	// ioctl(fd, WR_R_DISPLAY);
+	// retval = write(fd, &data_vida, sizeof(data_vida));
 	//printf("wrote %d bytes\n", retval);
+    //--------------------------------------------------------------------------------------------------
 
 
     float intervalo = 5, tempo = 5; //Tempo pra uma nave atirar
     int invaders_direction = 1;
     SetTargetFPS(80);               // Set our game to run at 60 frames-per-second
-    
-	
-	
 
-    //--------------------------------------------------------------------------------------
    	int total_exes = qtd_exes;
     int sla = 0;
     int outro = 0;
@@ -142,6 +142,8 @@ int main() {
     //variaveis de controle do personagem
     int *vetor, shot = 0;
     vetor = calloc(4, sizeof(int));
+
+
     // game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -152,44 +154,45 @@ int main() {
 		// else data = 0x40404040;
         
     	
-        data_score = decimal_to_display(score,4);
-		ioctl(fd, WR_R_DISPLAY);
-		retval = write(fd, &data_score, sizeof(data_score));
-		////printf("wrote %d bytes\n", retval);
+        //placa--------------------------------------------------------------------------------------------
+        // data_score = decimal_to_display(score,4);
+		// ioctl(fd, WR_R_DISPLAY);
+		// retval = write(fd, &data_score, sizeof(data_score));
+		// ////printf("wrote %d bytes\n", retval);
 		
-		ioctl(fd, RD_PBUTTONS);
-		read(fd, &data_button,1);
-		//printf("%d\n", data_button);
-		vetor = binary_transform(data_button);
+		// ioctl(fd, RD_PBUTTONS);
+		// read(fd, &data_button,1);
+		// //printf("%d\n", data_button);
+		// vetor = binary_transform(data_button);
 		
-		ioctl(fd, RD_SWITCHES);
-		read(fd, &data_switches,1);
-		printf("%X\n", data_switches);
+		// ioctl(fd, RD_SWITCHES);
+		// read(fd, &data_switches,1);
+		// printf("%X\n", data_switches);
 		
-        data_qtdexes_vida = decimal_to_display(rocket.vida,2);
-        data_qtdexes_vida = data_qtdexes_vida*pow(16, 4);
-        data_qtdexes_vida += decimal_to_display(qtd_exes, 2);  
-		ioctl(fd, WR_L_DISPLAY);
-		retval = write(fd, &data_qtdexes_vida, sizeof(data_qtdexes_vida));
-		//printf("wrote %d bytes\n", retval);
+        // data_qtdexes_vida = decimal_to_display(rocket.vida,2);
+        // data_qtdexes_vida = data_qtdexes_vida*pow(16, 4);
+        // data_qtdexes_vida += decimal_to_display(qtd_exes, 2);  
+		// ioctl(fd, WR_L_DISPLAY);
+		// retval = write(fd, &data_qtdexes_vida, sizeof(data_qtdexes_vida));
+		// //printf("wrote %d bytes\n", retval);
 
-		if(sla % 20 == 0){
-			if(outro == 0){
-				rled = 0x00000000;
-				outro = 1;
-			}
-			else{
-				rled = 0xFFFFFFFF;
-				outro = 0;
-			}
-			ioctl(fd, WR_RED_LEDS);
-			retval = write(fd, &rled, sizeof(rled));
-			//printf("wrote %d bytes\n", retval);
-		}
-		
+		// if(sla % 20 == 0){
+		// 	if(outro == 0){
+		// 		rled = 0x00000000;
+		// 		outro = 1;
+		// 	}
+		// 	else{
+		// 		rled = 0xFFFFFFFF;
+		// 		outro = 0;
+		// 	}
+		// 	ioctl(fd, WR_RED_LEDS);
+		// 	retval = write(fd, &rled, sizeof(rled));
+		// 	//printf("wrote %d bytes\n", retval);
+		// }
+		//--------------------------------------------------------------------------------------------------
 		
         // Update
-        //----------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------------
         if (!vetor[3] && rocket.position.x < screenWidth - rocket.texture.width) rocket.position.x += 4.0f;
         if (!vetor[0] && rocket.position.x > 0) rocket.position.x -= 4.0f;
         if (!vetor[1] && !shot) {
@@ -217,7 +220,7 @@ int main() {
             if(invaders_direction) exes[i].position.x += 2.0f;
             else if(!invaders_direction) exes[i].position.x -= 2.0f;
         }
-        //----------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------------
 
         projectile_list = Projectile_Movement(projectile_list);
        	
@@ -231,20 +234,23 @@ int main() {
         Check_Collision_Projectiles_Rocket(&rocket, &projectile_list);
         int game_status = Check_Game_Status(&rocket, &projectile_list, &exes, &qtd_exes);
 
-       //printf("%d\n", projectile_list.qtd_projectile);
-        // Draw
-        //----------------------------------------------------------------------------------
+        //printf("%d\n", projectile_list.qtd_projectile);
+
+
+        // Draw----------------------------------------------------------------------------------
         BeginDrawing();
 
-            
-            if(data_switches==1)ClearBackground(BLUE);
-            else if(data_switches==2)ClearBackground(GREEN);
-            else if(data_switches==3)ClearBackground(RED);
-            else if(data_switches==4)ClearBackground(PURPLE);
-            else if(data_switches==5)ClearBackground(BLACK);
-            else if(data_switches==6)ClearBackground(BROWN);
-            else if(data_switches==7)ClearBackground((Color){123,232,89,255});
-            else ClearBackground(RAYWHITE);
+            //placa--------------------------------------------------------------------------------------------
+            // if(data_switches==1)ClearBackground(BLUE);
+            // else if(data_switches==2)ClearBackground(GREEN);
+            // else if(data_switches==3)ClearBackground(RED);
+            // else if(data_switches==4)ClearBackground(PURPLE);
+            // else if(data_switches==5)ClearBackground(BLACK);
+            // else if(data_switches==6)ClearBackground(BROWN);
+            // else if(data_switches==7)ClearBackground((Color){123,232,89,255});
+            // else 
+            //------------------------------------------------------------------------------------------------
+            ClearBackground(RAYWHITE);
             //DrawRectangleRec(teste, BLUE);
             DrawTextureV(rocket.texture, (Vector2){rocket.position.x, rocket.position.y}, WHITE); //Casting pq rocket agora é um Rectangle e drawTexture só aceita Vector2D
             Draw_Exes(exes, qtd_exes);
@@ -256,6 +262,7 @@ int main() {
 
         EndDrawing();
         //----------------------------------------------------------------------------------
+        
         if(rocket.vida==0) gameOver();
         //if(qtd_exes==0) gameWin();
     }
