@@ -6,6 +6,6 @@
 
 int abrirMenu();
 void gameOver();
-void gameWin(int time, int* venceu, Sound* Tema);
+void gameWin();
 
 #endif
