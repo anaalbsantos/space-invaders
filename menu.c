@@ -7,9 +7,6 @@ int abrirMenu(){
     const int screen_height = 924;
     int bloqueador = 0;
     int fechar = 0;
-    
-    //Sound Menu = LoadSound("./Assets/21 - Dream.wav");
-    //SetSoundVolume(Menu, 0.18);
 
     InitWindow(screen_width, screen_height , "exes invaders");
 
@@ -17,7 +14,6 @@ int abrirMenu(){
     Texture2D tutorial = LoadTexture("./assets/Tutorial.png");
     SetTargetFPS(60);
     
-    //PlaySound(Menu);
     
     while(IsKeyUp(KEY_ENTER)==1 && IsKeyUp(KEY_ESCAPE)==1){
 
@@ -57,20 +53,15 @@ void gameOver(){
     }
 }
 
-void gameWin(int time, int* venceu, Sound* Tema){
-    if(time == 80){
-        
-        StopSound(*Tema);
-        const int screen_weight = 1600;
-        const int screen_height = 800;
-        Texture2D Vitoria = LoadTexture("./Assets/Vitoria.png");
-        SetTargetFPS(60);
-        *venceu = 1;
+void gameWin(){
+    // const int screen_weight = 1600;
+    // const int screen_height = 800;
+    Texture2D Vitoria = LoadTexture("./assets/Win.png");
+    SetTargetFPS(60);
 
-        while(IsKeyUp(KEY_ESCAPE) && IsKeyUp(KEY_ENTER)){
+    while(IsKeyUp(KEY_ESCAPE) && IsKeyUp(KEY_ENTER)){
         BeginDrawing();
-        DrawTexture(Vitoria, screen_weight/2 - Vitoria.width/2, screen_height/2 - Vitoria.height/2, WHITE);
+        DrawTexture(Vitoria, 0,0, WHITE);
         EndDrawing();
     }
-}
 }

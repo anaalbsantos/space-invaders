@@ -3,6 +3,8 @@
 #include "raylib.h"
 #include "colisoes.h"
 
+#define SPACE 5.0f
+
 Projectile_List Generate_Ex_Projectile(Ex ex, Projectile_List projectile_list, Texture2D Musical_Notes){
 
     Projectile new_projectile = {{ex.position.x+(ex.texture.width*0.5), ex.position.y+ex.texture.height+1, Musical_Notes.width, Musical_Notes.height},{0,1},Musical_Notes}; //Orientação (0,1) indica que ele não anda na direção x, só na +y (pra baixo). 71 é metade da largura da foto e 160 é um pouco maior que a altura do ex
@@ -25,7 +27,6 @@ Projectile_List Generate_Taylor_Projectile(Rocket rocket, Projectile_List projec
 }
 
 
-
 Projectile_List Projectile_Movement(Projectile_List projectile_list){ //Coordena os movimentos dos projéteis baseado na "orientation" que foi declarada nas funções Generate Projectile
     for(int i=0; i<projectile_list.qtd_projectile; i++){
         projectile_list.projectiles[i].position.x += 4*projectile_list.projectiles[i].orientation.x;
@@ -43,13 +44,27 @@ void Draw_Projectiles(Projectile_List projectile_list){ //Escreve os projéteis 
 Ex *Generate_Exes(int nivel, int *qtd_exes, Texture2D textures_exes[]){ //Essa função inicializa os exes a depender da fase (a lógica disso na main ainda não tá feita :(
     Ex *exes = NULL;
     if(nivel==1){ //O vetor estático serve só pra ficar mais fácil de declarar a posição e a textura.
-        *qtd_exes = 5;
-        int a = *(qtd_exes);
-        Ex static_exes[] = {{{100.0,100.0,  textures_exes[0].width,textures_exes[0].height}, textures_exes[0]}, //A posição (x, y, largura e altura) e a textura dos exes
-                             {{300.0,100.0, textures_exes[0].width,textures_exes[0].height}, textures_exes[0]},
-                             {{500.0,100.0, textures_exes[0].width,textures_exes[0].height}, textures_exes[0]},
-                             {{700.0,100.0, textures_exes[0].width,textures_exes[0].height}, textures_exes[0]},
-                             {{900.0,100.0, textures_exes[0].width,textures_exes[0].height}, textures_exes[0]}}; 
+        *qtd_exes = 11;
+        Ex static_exes[11];
+
+        static_exes[0].position = (Rectangle){100.0, 100.0, textures_exes[0].width, textures_exes[0].height};
+        static_exes[0].animation = (Rectangle){0.0, 0.0, textures_exes[0].width/2, textures_exes[0].height};
+        static_exes[0].texture = textures_exes[0];
+
+        for(int i=0; i<6; i++){
+            for(int j=0; j<4; j++){ //considera todos com mesmo tamanho
+                static_exes[i*2+j+1].position = (Rectangle){100.0 + (textures_exes[1].width + SPACE)*i, 300.0 + (textures_exes[1].height + SPACE)*j,  textures_exes[1].width,textures_exes[1].height};
+                static_exes[i*2+j+1].animation = (Rectangle){0.0, 0.0, textures_exes[1].width/2, textures_exes[1].height};
+                static_exes[i*2+j+1].texture = textures_exes[i*2+j+1];
+            }
+        }
+
+        // Ex static_exes[] = {{{100.0,100.0,  textures_exes[0].width,textures_exes[0].height}, {0.0, 0.0, textures_exes[0].width/2, textures_exes[0].height},textures_exes[0]}, 
+        //                      {{300.0,100.0, textures_exes[1].width,textures_exes[1].height}, {0.0, 0.0, textures_exes[1].width/2, textures_exes[1].height},textures_exes[1]}
+        //                     //  {{500.0,100.0, textures_exes[0].width,textures_exes[0].height}, textures_exes[0]},
+        //                     //  {{700.0,100.0, textures_exes[0].width,textures_exes[0].height}, textures_exes[0]},
+        //                     //  {{900.0,100.0, textures_exes[0].width,textures_exes[0].height}, textures_exes[0]}
+        //                     }; 
         exes = (Ex*) malloc ((*qtd_exes)*sizeof(Ex));
         for(int i=0;i<(*qtd_exes);i++) exes[i] = static_exes[i]; //No final eu igual o vetor estático ao dinâmico (é dinâmico pq os exes vão ser mortos durante o jogo)
     }
@@ -58,7 +73,7 @@ Ex *Generate_Exes(int nivel, int *qtd_exes, Texture2D textures_exes[]){ //Essa f
 
 void Draw_Exes(Ex* exes, int qtd_exes){ // Escreve os exes na tela
     for(int i=0;i<qtd_exes;i++){
-        DrawTextureV(exes[i].texture, (Vector2){exes[i].position.x, exes[i].position.y}, WHITE);
+        DrawTextureRec(exes[i].texture, exes[i].animation ,(Vector2){exes[i].position.x, exes[i].position.y}, WHITE);
     }
 }
 
@@ -93,7 +108,7 @@ int Check_Projectiles_Boundaries(Projectile_List *projectile_list, int screenWid
 int Check_Collision_Projectiles_Exes(Ex **exes, int *qtd_exes, Projectile_List *projectile_list){ //Checa a colisão entre um projétil e um ex
     for(int i=0;i<*qtd_exes;i++){
         for(int j=0;j<(*projectile_list).qtd_projectile;j++){
-            if(CheckCollisionRecs((*exes)[i].position, (*projectile_list).projectiles[j].position)){
+            if(CheckCollisionRecs((*exes)[i].position, (*projectile_list).projectiles[j].position) && projectile_list->projectiles[j].orientation.y == -1){
                 Remove_Ex(i, exes, qtd_exes);
                 Remove_Projectile(j, projectile_list);
                 return 1;

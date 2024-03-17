@@ -11,6 +11,7 @@ typedef struct {
 
 typedef struct {
     Rectangle position;
+    Rectangle animation;
     Texture2D texture;
 } Ex;
 
