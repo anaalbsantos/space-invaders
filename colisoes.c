@@ -51,23 +51,18 @@ Ex *Generate_Exes(int nivel, int *qtd_exes, Texture2D textures_exes[]){ //Essa f
         static_exes[0].animation = (Rectangle){0.0, 0.0, textures_exes[0].width/2, textures_exes[0].height};
         static_exes[0].texture = textures_exes[0];
 
-        for(int i=0; i<6; i++){
-            for(int j=0; j<4; j++){ //considera todos com mesmo tamanho
+        for(int i=0; i<5; i++){
+            for(int j=0; j<2; j++){ //considera todos com mesmo tamanho
                 static_exes[i*2+j+1].position = (Rectangle){100.0 + (textures_exes[1].width + SPACE)*i, 300.0 + (textures_exes[1].height + SPACE)*j,  textures_exes[1].width,textures_exes[1].height};
                 static_exes[i*2+j+1].animation = (Rectangle){0.0, 0.0, textures_exes[1].width/2, textures_exes[1].height};
                 static_exes[i*2+j+1].texture = textures_exes[i*2+j+1];
             }
         }
-
-        // Ex static_exes[] = {{{100.0,100.0,  textures_exes[0].width,textures_exes[0].height}, {0.0, 0.0, textures_exes[0].width/2, textures_exes[0].height},textures_exes[0]}, 
-        //                      {{300.0,100.0, textures_exes[1].width,textures_exes[1].height}, {0.0, 0.0, textures_exes[1].width/2, textures_exes[1].height},textures_exes[1]}
-        //                     //  {{500.0,100.0, textures_exes[0].width,textures_exes[0].height}, textures_exes[0]},
-        //                     //  {{700.0,100.0, textures_exes[0].width,textures_exes[0].height}, textures_exes[0]},
-        //                     //  {{900.0,100.0, textures_exes[0].width,textures_exes[0].height}, textures_exes[0]}
-        //                     }; 
+        
         exes = (Ex*) malloc ((*qtd_exes)*sizeof(Ex));
         for(int i=0;i<(*qtd_exes);i++) exes[i] = static_exes[i]; //No final eu igual o vetor estático ao dinâmico (é dinâmico pq os exes vão ser mortos durante o jogo)
     }
+    printf("%d", *qtd_exes);
     return exes;
 }
 
@@ -145,4 +140,63 @@ void Unload_All_Textures(Rocket rocket, Texture2D texture_projectiles, Texture2D
     UnloadTexture(rocket.texture);
     UnloadTexture(texture_projectiles);
     for(int i=0;i<qtd_texture_exes;i++) UnloadTexture(texture_exes[i]);
+}
+
+void Generate_Level(int nivel, Rocket *rocket, Texture2D *backgroung, Color *cor, Projectile_List *projectile_list, Texture *texture_projectiles, int *qtd_exes, Ex **exes, int *qtd_texture_exes, float *intervalo, float *tempo, int *invaders_direction, int *total_exes, int *outro, unsigned int *score, unsigned int *data_score, int *var, int *pontuacao, int** vetor, int *shot, int* frame){
+
+    const int screenWidth = 1640;
+    const int screenHeight = 924;
+
+    exes=NULL;
+    *qtd_exes=0;
+
+    if(nivel == 1){
+
+        *qtd_texture_exes = 11; 
+        //Texture2D texture_exes[11];
+        //texture_exes[0] = LoadTexture("assets/joe-sprite.png");
+
+        //for(int i=1; i<*qtd_texture_exes; i++){
+            //texture_exes[i] = LoadTexture("assets/bixinho.png");
+        //} //Carrega as texturas dos exes
+
+        //exes = Generate_Exes(nivel, qtd_exes, texture_exes);
+
+        //Setando os Projéteis
+        projectile_list->projectiles = NULL; //vetor de projéteis começa como NULL e tem 0 projéteis no mapa
+        projectile_list->qtd_projectile = 0;
+        
+        *texture_projectiles = LoadTexture("assets/nota-musical.png");
+
+        //Setando o foguete/Taylor
+        rocket->vida = 3;
+        rocket->texture = LoadTexture("assets/rocket-pixel.png");
+        rocket->position = (Rectangle){ (float)2*screenWidth/3, (float)2*screenHeight/3, rocket->texture.width, rocket->texture.height };
+        
+        //fundo do mapa
+        *backgroung = LoadTexture("assets/background.png");
+        
+        //animação do alien
+        *frame = 0;
+
+        SetTargetFPS(80);
+
+        *intervalo = 5; 
+        *tempo = 5; //Tempo pra uma nave atirar
+        *invaders_direction = 1;
+        *total_exes = *qtd_exes;
+        *outro = 0;
+        *score = 0; 
+        *data_score = 0;
+        *var = 0;
+        *pontuacao = 5;
+        //cor->a = 123; cor->b = 232; cor->g = 122; cor->r = 255;
+        
+        //variaveis de controle do personagem
+        //**vetor = 0;
+        //*shot = 0;
+        //*vetor = calloc(4, sizeof(int));
+
+    }
+
 }
