@@ -47,12 +47,13 @@ unsigned int decimal_to_display(int numero, int casas){
     return hex_resultado;
 }
 
-int *binary_transform(int numero){
+int *binary_transform(unsigned int numero, int tam){
+	tam--;
 	int *vetor;
-	vetor = malloc(sizeof(int)*4);
-	for(int i = 0; i < 4; i++){
-		if(numero%2 == 1) vetor[3-i] = 1;
-		else vetor[3-i] = 0;
+	vetor = malloc(sizeof(int)*(tam+1));
+	for(int i = 0; i < tam+1; i++){
+		if(numero%2 == 1) vetor[tam-i] = 1;
+		else vetor[tam-i] = 0;
 		numero /= 2;
 	}
 	return vetor;

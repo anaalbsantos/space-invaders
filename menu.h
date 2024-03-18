@@ -4,8 +4,8 @@
 #include "menu.h"
 #include "raylib.h"
 
-int abrirMenu();
-int gameOver();
-int gameWin();
+int abrirMenu(int fd);
+int gameOver(int fd);
+int gameWin(int fd);
 
 #endif

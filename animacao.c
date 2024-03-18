@@ -4,7 +4,7 @@
 void exes_animation(int *frame, Ex *exes, int qtd_exes){
     int frame_speed = 3;
 
-    if(*frame >= 80/frame_speed){
+    if(*frame >= 30/frame_speed){
         *frame = 0;
 
         for(int i=0; i<qtd_exes; i++){

@@ -1,13 +1,23 @@
 #include "menu.h"
 #include "raylib.h"
 #include "colisoes.h"
+#include "driver.h"
+#include <string.h>	/* memcpy, strlen... */
+#include <stdint.h>	/* uints types */
+#include <sys/types.h>	/* size_t ,ssize_t, off_t... */
+#include <unistd.h>	/* close() read() write() */
+#include <fcntl.h>	/* open() */
+#include <sys/ioctl.h>	/* ioctl() */
+#include <errno.h>	/* error codes */
+#include "ioctl_cmds.h"
 
-int abrirMenu(){
+int abrirMenu(int fd){
     
-    const int screen_width = 1640;
-    const int screen_height = 924;
+    const int screen_width = 1024;
+    const int screen_height = 768;
     int bloqueador = 0;
     int nivel = 0;
+    unsigned int data_switches=0;
     
 
     InitWindow(screen_width, screen_height , "exes invaders");
@@ -16,10 +26,18 @@ int abrirMenu(){
     Texture2D tutorial = LoadTexture("./assets/Tutorial.png");
     SetTargetFPS(60);
     
-    //PlaySound(Menu);
-    
-    while(IsKeyUp(KEY_ESCAPE) && IsKeyUp(KEY_ONE) && IsKeyUp(KEY_TWO) && IsKeyUp(KEY_THREE)){
-
+    int *vetor_switch = NULL;
+    ioctl(fd, RD_SWITCHES);
+	read(fd, &data_switches,1);
+	vetor_switch = binary_transform(data_switches, 18);
+	
+		
+    while(vetor_switch[14] == 0 && vetor_switch[17] == 0 && vetor_switch[16] == 0 && vetor_switch[15] == 0){
+		
+		ioctl(fd, RD_SWITCHES);
+		read(fd, &data_switches,1);
+		vetor_switch = binary_transform(data_switches, 18);
+		
         BeginDrawing();
         
         if(bloqueador == 0)
@@ -32,15 +50,15 @@ int abrirMenu(){
 
         EndDrawing();
         
-        if(IsKeyDown(KEY_ONE)){
+        if(vetor_switch[17]){
             nivel = 1;
         }
 
-        if(IsKeyDown(KEY_TWO)){
+        if(vetor_switch[16]){
             nivel = 2;
         }
 
-        if(IsKeyDown(KEY_THREE)){
+        if(vetor_switch[15]){
             nivel = 3;
         }
 
@@ -50,44 +68,66 @@ int abrirMenu(){
 }
 
 
-int gameOver(){
+int gameOver(int fd){
 
     Texture2D GameOver = LoadTexture("./assets/Gameover.png");
     int resetar = 0;
-
-    while(IsKeyUp(KEY_ESCAPE) && IsKeyUp(KEY_ENTER)){
+    unsigned int data_switches=0;
+	
+	int *vetor_switch = NULL;
+    ioctl(fd, RD_SWITCHES);
+	read(fd, &data_switches,1);
+	vetor_switch = binary_transform(data_switches, 18);
+	
+    while(vetor_switch[14] == 0 && vetor_switch[13] == 0){
+    
+    	ioctl(fd, RD_SWITCHES);
+		read(fd, &data_switches,1);
+		vetor_switch = binary_transform(data_switches, 18);
+	
         BeginDrawing();
         DrawTexture(GameOver, 0, 0, WHITE);
         EndDrawing();
     }
 
-    if(IsKeyDown(KEY_ESCAPE)){
+    if(vetor_switch[14]){
         CloseWindow();
     }
     
-    if(IsKeyDown(KEY_ENTER)){
+    if(vetor_switch[13]){
         resetar = 1;
-        }
+       }
 
     return resetar;
 }
 
-int gameWin(){
+int gameWin(int fd){
         
-        Texture2D Vitoria = LoadTexture("./Assets/Win.png");
+        Texture2D Vitoria = LoadTexture("./assets/Win.png");
         int resetar = 0;
+        unsigned int data_switches=0;
+        
+        int *vetor_switch = NULL;
+    	ioctl(fd, RD_SWITCHES);
+		read(fd, &data_switches,1);
+		vetor_switch = binary_transform(data_switches, 18);
 
-        while(IsKeyUp(KEY_ESCAPE) && IsKeyUp(KEY_ENTER)){
+        while(vetor_switch[14] == 0 && vetor_switch[13] == 0){
+        
+        	ioctl(fd, RD_SWITCHES);
+			read(fd, &data_switches,1);
+			vetor_switch = binary_transform(data_switches, 18);
+	
             BeginDrawing();
             DrawTexture(Vitoria, 0, 0, WHITE);
             EndDrawing();
         }
 
-        if(IsKeyDown(KEY_ESCAPE)){
+        if(vetor_switch[14]){
             CloseWindow();
         }
 
-        if(IsKeyDown(KEY_ENTER)){
+        if(vetor_switch[13]){
             resetar = 1;
         }
 
