@@ -1,12 +1,14 @@
 #include "menu.h"
 #include "raylib.h"
+#include "colisoes.h"
 
 int abrirMenu(){
     
     const int screen_width = 1640;
     const int screen_height = 924;
     int bloqueador = 0;
-    int fechar = 0;
+    int nivel = 0;
+    
 
     InitWindow(screen_width, screen_height , "exes invaders");
 
@@ -14,8 +16,9 @@ int abrirMenu(){
     Texture2D tutorial = LoadTexture("./assets/Tutorial.png");
     SetTargetFPS(60);
     
+    //PlaySound(Menu);
     
-    while(IsKeyUp(KEY_ENTER)==1 && IsKeyUp(KEY_ESCAPE)==1){
+    while(IsKeyUp(KEY_ESCAPE) && IsKeyUp(KEY_ONE) && IsKeyUp(KEY_TWO) && IsKeyUp(KEY_THREE)){
 
         BeginDrawing();
         
@@ -29,39 +32,64 @@ int abrirMenu(){
 
         EndDrawing();
         
-        if(IsKeyDown(KEY_ESCAPE)){
-            fechar = 1;
+        if(IsKeyDown(KEY_ONE)){
+            nivel = 1;
+        }
+
+        if(IsKeyDown(KEY_TWO)){
+            nivel = 2;
+        }
+
+        if(IsKeyDown(KEY_THREE)){
+            nivel = 3;
         }
 
     }
 
-    return fechar;
+    return nivel;
 }
 
 
-void gameOver(){
+int gameOver(){
 
-    // const int screen_weight = 1600;
-    // const int screen_height = 800;
     Texture2D GameOver = LoadTexture("./assets/Gameover.png");
-
+    int resetar = 0;
 
     while(IsKeyUp(KEY_ESCAPE) && IsKeyUp(KEY_ENTER)){
         BeginDrawing();
         DrawTexture(GameOver, 0, 0, WHITE);
         EndDrawing();
     }
+
+    if(IsKeyDown(KEY_ESCAPE)){
+        CloseWindow();
+    }
+    
+    if(IsKeyDown(KEY_ENTER)){
+        resetar = 1;
+        }
+
+    return resetar;
 }
 
-void gameWin(){
-    // const int screen_weight = 1600;
-    // const int screen_height = 800;
-    Texture2D Vitoria = LoadTexture("./assets/Win.png");
-    SetTargetFPS(60);
+int gameWin(){
+        
+        Texture2D Vitoria = LoadTexture("./Assets/Win.png");
+        int resetar = 0;
 
-    while(IsKeyUp(KEY_ESCAPE) && IsKeyUp(KEY_ENTER)){
-        BeginDrawing();
-        DrawTexture(Vitoria, 0,0, WHITE);
-        EndDrawing();
-    }
+        while(IsKeyUp(KEY_ESCAPE) && IsKeyUp(KEY_ENTER)){
+            BeginDrawing();
+            DrawTexture(Vitoria, 0, 0, WHITE);
+            EndDrawing();
+        }
+
+        if(IsKeyDown(KEY_ESCAPE)){
+            CloseWindow();
+        }
+
+        if(IsKeyDown(KEY_ENTER)){
+            resetar = 1;
+        }
+
+    return resetar;
 }

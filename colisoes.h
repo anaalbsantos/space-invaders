@@ -40,7 +40,7 @@ int Check_Projectiles_Boundaries(Projectile_List *projectile_list, int screenWid
 int Check_Collision_Projectiles_Exes(Ex **exes, int *qtd_exes, Projectile_List *projectile_list); //Checa a colisão entre um projétil e um ex
 int Check_Collision_Projectiles_Rocket(Rocket *rocket, Projectile_List *projectile_list); //Checa a colisão entre um projetil e o foguete
 int Check_Game_Status(Rocket *rocket, Projectile_List *projectile_list, Ex **exes, int *qtd_exes);
-
 void Unload_All_Textures(Rocket rocket, Texture2D texture_projectiles, Texture2D texture_exes[], int qtd_texture_exes); //Dá unload em todas as texturas
+void Generate_Level(int nivel, Rocket *rocket, Texture2D *backgroung, Color *cor, Projectile_List *projectile_list, Texture *texture_projectiles, int *qtd_exes, Texture2D texture_exes[], Ex **exes, int *qtd_texture_exes, float *intervalo, float *tempo, int *invaders_direction, int *total_exes, int *outro, unsigned int *score, unsigned int *data_score, int *var, int *pontuacao ,int** vetor, int *shot, int* frame);
 
 #endif

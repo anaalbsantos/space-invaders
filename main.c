@@ -24,116 +24,44 @@
 
 
 int main() {
-	
-    //placa--------------------------------------------------------------------------------------------
-    // int fd, retval;
-    // unsigned int data_button=0;
-    // unsigned int data_switches=0;
-    // fd = open("/dev/mydev", O_RDWR);
-
-	// unsigned int rled = 0x00000000;
-	// ioctl(fd, WR_RED_LEDS);
-	// retval = write(fd, &rled, sizeof(rled));
-	// printf("wrote %d bytes\n", retval);
-    //------------------------------------------------------------------------------------------------
-	
-    
+	   
     //--------------------------------------------------------------------------------------
     const int screenWidth = 1640;
     const int screenHeight = 924;
 
-    int nivel = 1; //Indica o nível atual do jogo
-
-    abrirMenu();
+    int nivel; //Indica o nível atual do jogo
+    nivel = abrirMenu();
     float aux = GetTime();
     SetRandomSeed(time(NULL));
 
-    //Setando os exes
+    int resetar = 0;
     Ex *exes=NULL;
-    int qtd_exes=0;
-    int qtd_texture_exes = 11; //Quando tiver mais exes fora o joe, a gente aumenta isso daqui
-    Texture2D texture_exes[qtd_texture_exes];
-    texture_exes[0] = LoadTexture("assets/joe-sprite.png");
-    for(int i=1; i<qtd_texture_exes; i++){
-        texture_exes[i] = LoadTexture("assets/bixinho.png");
-    } //Carrega as texturas dos exes
-
-    exes = Generate_Exes(nivel, &qtd_exes, texture_exes);
-
-    //Setando os Projéteis
-    Projectile_List projectile_list = {NULL, 0}; //vetor de projéteis começa como NULL e tem 0 projéteis no mapa
-    Texture texture_projectiles = LoadTexture("assets/nota-musical.png");
-
-    //Setando o foguete/Taylor
-    Rocket rocket;
-    rocket.vida = 3;
-    rocket.texture = LoadTexture("assets/rocket-pixel.png");
-    rocket.position = (Rectangle){ (float)2*screenWidth/3, (float)2*screenHeight/3, rocket.texture.width, rocket.texture.height };
-    
-    //fundo do mapa
-    Texture2D backgroung = LoadTexture("assets/background.png");
-    
-    //animação do alien
+    int qtd_exes = 0;
+    int qtd_texture_exes = 0;
     int frame = 0;
+    Rocket rocket;
+    Texture2D backgroung;
+    Color cor;
+    Projectile_List projectile_list;
+    Texture texture_projectiles;
 
-    //placa--------------------------------------------------------------------------------------------
-    // unsigned int data_qtdexes_vida;
-	// unsigned int data_vida = decimal_to_display(rocket.vida, 4);
-	// ioctl(fd, WR_R_DISPLAY);
-	// retval = write(fd, &data_vida, sizeof(data_vida));
-	//printf("wrote %d bytes\n", retval);
-    //--------------------------------------------------------------------------------------------------
+    float intervalo, tempo; //Tempo pra uma nave atirar
+    int invaders_direction;
+    int total_exes;
+    int outro;
+    unsigned int score, data_score;
+    int var, pontuacao;
+    int *vetor;
+    int shot;
 
-    SetTargetFPS(80);
-
-    float intervalo = 5, tempo = 5; //Tempo pra uma nave atirar
-    int invaders_direction = 1;
-   	int total_exes = qtd_exes;
-    int outro = 0;
-    unsigned int score = 0, data_score = 0;
-    int var = 0, pontuacao = 5;
-    Color cor = {123,232,122,255};
+    Texture2D texture_exes[11];
     
     //variaveis de controle do personagem
-    int *vetor, shot = 0;
-    vetor = calloc(4, sizeof(int));
-
+ 
+    Generate_Level(nivel, &rocket, &backgroung, &cor, &projectile_list, &texture_projectiles, &qtd_exes, texture_exes, &exes, &qtd_texture_exes, &intervalo, &tempo, &invaders_direction, &total_exes, &outro, &score, &data_score, &var, &pontuacao, &vetor, &shot, &frame);
 
     // game loop
     while (!WindowShouldClose()){
-        
-        //placa--------------------------------------------------------------------------------------------
-        // if(rocket.vida == 3) data = 0x40404030;
-		// else if(rocket.vida == 2) data = 0x40404024;
-		// else if(rocket.vida == 1) data = 0x40404079;
-		// else data = 0x40404040;
-    	
-        // data_score = decimal_to_display(score,4);
-		// ioctl(fd, WR_R_DISPLAY);
-		// retval = write(fd, &data_score, sizeof(data_score));
-		// ////printf("wrote %d bytes\n", retval);
-		
-		// ioctl(fd, RD_PBUTTONS);
-		// read(fd, &data_button,1);
-		// //printf("%d\n", data_button);
-		// vetor = binary_transform(data_button);
-		
-		// ioctl(fd, RD_SWITCHES);
-		// read(fd, &data_switches,1);
-		// printf("%X\n", data_switches);
-		
-        // data_qtdexes_vida = decimal_to_display(rocket.vida,2);
-        // data_qtdexes_vida = data_qtdexes_vida*pow(16, 4);
-        // data_qtdexes_vida += decimal_to_display(qtd_exes, 2);  
-		// ioctl(fd, WR_L_DISPLAY);
-		// retval = write(fd, &data_qtdexes_vida, sizeof(data_qtdexes_vida));
-		// //printf("wrote %d bytes\n", retval);
-
-		// 	ioctl(fd, WR_RED_LEDS);
-		// 	retval = write(fd, &rled, sizeof(rled));
-		// 	//printf("wrote %d bytes\n", retval);
-		// }
-		//-------------------------------------------------------------------------------------------------
 		
         // Update---------------------------------------------------------------------------------------------------
         if (IsKeyDown(KEY_RIGHT) && rocket.position.x < screenWidth - rocket.texture.width) rocket.position.x += 4.0f;
@@ -212,15 +140,21 @@ int main() {
         EndDrawing();
         //--------------------------------------------------------------------------------------
         
-        if(rocket.vida == 0) gameOver();
-        //else if(game_status) gameWin();
+        if(rocket.vida == 0) resetar = gameOver();
+        else if(game_status) resetar = gameWin();
+
+        if(resetar){
+            aux = GetTime();
+            Generate_Level(nivel, &rocket, &backgroung, &cor, &projectile_list, &texture_projectiles, &qtd_exes, texture_exes, &exes, &qtd_texture_exes, &intervalo, &tempo, &invaders_direction, &total_exes, &outro, &score, &data_score, &var, &pontuacao, &vetor, &shot, &frame);
+            resetar = 0;
+        }
     }
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
     free(exes);
     free(projectile_list.projectiles);
-    Unload_All_Textures(rocket, texture_projectiles, texture_exes, qtd_texture_exes);
+    //Unload_All_Textures(rocket, texture_projectiles, &texture_exes, qtd_texture_exes);
     UnloadTexture(backgroung);
     CloseWindow();
     //--------------------------------------------------------------------------------------
