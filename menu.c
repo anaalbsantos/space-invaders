@@ -1,5 +1,6 @@
 #include "menu.h"
 #include "raylib.h"
+#include "colisoes.h"
 
 int abrirMenu(){
     
@@ -49,9 +50,10 @@ int abrirMenu(){
 }
 
 
-void gameOver(){
+int gameOver(){
 
     Texture2D GameOver = LoadTexture("./assets/Gameover.png");
+    int resetar = 0;
 
     while(IsKeyUp(KEY_ESCAPE) && IsKeyUp(KEY_ENTER)){
         BeginDrawing();
@@ -64,13 +66,16 @@ void gameOver(){
     }
     
     if(IsKeyDown(KEY_ENTER)){
-
+        resetar = 1;
         }
+
+    return resetar;
 }
 
-void gameWin(){
+int gameWin(){
         
         Texture2D Vitoria = LoadTexture("./Assets/Win.png");
+        int resetar = 0;
 
         while(IsKeyUp(KEY_ESCAPE) && IsKeyUp(KEY_ENTER)){
             BeginDrawing();
@@ -83,6 +88,8 @@ void gameWin(){
         }
 
         if(IsKeyDown(KEY_ENTER)){
-
+            resetar = 1;
         }
+
+    return resetar;
 }

@@ -5,7 +5,7 @@
 #include "raylib.h"
 
 int abrirMenu();
-void gameOver();
-void gameWin();
+int gameOver();
+int gameWin();
 
 #endif

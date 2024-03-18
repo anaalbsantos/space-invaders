@@ -142,26 +142,22 @@ void Unload_All_Textures(Rocket rocket, Texture2D texture_projectiles, Texture2D
     for(int i=0;i<qtd_texture_exes;i++) UnloadTexture(texture_exes[i]);
 }
 
-void Generate_Level(int nivel, Rocket *rocket, Texture2D *backgroung, Color *cor, Projectile_List *projectile_list, Texture *texture_projectiles, int *qtd_exes, Ex **exes, int *qtd_texture_exes, float *intervalo, float *tempo, int *invaders_direction, int *total_exes, int *outro, unsigned int *score, unsigned int *data_score, int *var, int *pontuacao, int** vetor, int *shot, int* frame){
+void Generate_Level(int nivel, Rocket *rocket, Texture2D *backgroung, Color *cor, Projectile_List *projectile_list, Texture *texture_projectiles, int *qtd_exes, Texture2D texture_exes[], Ex **exes, int *qtd_texture_exes, float *intervalo, float *tempo, int *invaders_direction, int *total_exes, int *outro, unsigned int *score, unsigned int *data_score, int *var, int *pontuacao, int** vetor, int *shot, int* frame){
 
     const int screenWidth = 1640;
     const int screenHeight = 924;
 
-    exes=NULL;
-    *qtd_exes=0;
 
     if(nivel == 1){
 
         *qtd_texture_exes = 11; 
-        //Texture2D texture_exes[11];
-        //texture_exes[0] = LoadTexture("assets/joe-sprite.png");
+        texture_exes[0] = LoadTexture("assets/joe-sprite.png");
 
-        //for(int i=1; i<*qtd_texture_exes; i++){
-            //texture_exes[i] = LoadTexture("assets/bixinho.png");
-        //} //Carrega as texturas dos exes
+        for(int i=1; i<*qtd_texture_exes; i++){
+            texture_exes[i] = LoadTexture("assets/bixinho.png");
+        } //Carrega as texturas dos exes
 
-        //exes = Generate_Exes(nivel, qtd_exes, texture_exes);
-
+        *exes = Generate_Exes(nivel, qtd_exes, texture_exes);
         //Setando os Projéteis
         projectile_list->projectiles = NULL; //vetor de projéteis começa como NULL e tem 0 projéteis no mapa
         projectile_list->qtd_projectile = 0;
@@ -190,12 +186,12 @@ void Generate_Level(int nivel, Rocket *rocket, Texture2D *backgroung, Color *cor
         *data_score = 0;
         *var = 0;
         *pontuacao = 5;
-        //cor->a = 123; cor->b = 232; cor->g = 122; cor->r = 255;
+        cor->a = 123; cor->b = 232; cor->g = 122; cor->r = 255;
         
         //variaveis de controle do personagem
-        //**vetor = 0;
-        //*shot = 0;
-        //*vetor = calloc(4, sizeof(int));
+        *vetor = 0;
+        *shot = 0;
+        vetor = calloc(4, sizeof(int));
 
     }
 

@@ -34,6 +34,7 @@ int main() {
     float aux = GetTime();
     SetRandomSeed(time(NULL));
 
+    int resetar = 0;
     Ex *exes=NULL;
     int qtd_exes = 0;
     int qtd_texture_exes = 0;
@@ -54,17 +55,10 @@ int main() {
     int shot;
 
     Texture2D texture_exes[11];
-    texture_exes[0] = LoadTexture("assets/joe-sprite.png");
-    for(int i=1; i<11; i++){
-            texture_exes[i] = LoadTexture("assets/bixinho.png");
-        } //Carrega as texturas dos exes
-    exes = Generate_Exes(nivel, 11, texture_exes);
-
+    
     //variaveis de controle do personagem
-    *vetor, shot = 0;
-    vetor = calloc(4, sizeof(int));
-
-    Generate_Level(nivel, &rocket, &backgroung, &cor, &projectile_list, &texture_projectiles, &qtd_exes, exes, &qtd_texture_exes, &intervalo, &tempo, &invaders_direction, &total_exes, &outro, &score, &data_score, &var, &pontuacao, vetor, &shot, &frame);
+ 
+    Generate_Level(nivel, &rocket, &backgroung, &cor, &projectile_list, &texture_projectiles, &qtd_exes, texture_exes, &exes, &qtd_texture_exes, &intervalo, &tempo, &invaders_direction, &total_exes, &outro, &score, &data_score, &var, &pontuacao, &vetor, &shot, &frame);
 
     // game loop
     while (!WindowShouldClose()){
@@ -146,8 +140,14 @@ int main() {
         EndDrawing();
         //--------------------------------------------------------------------------------------
         
-        if(rocket.vida == 0) gameOver();
-        else if(game_status) gameWin();
+        if(rocket.vida == 0) resetar = gameOver();
+        else if(game_status) resetar = gameWin();
+
+        if(resetar){
+            aux = GetTime();
+            Generate_Level(nivel, &rocket, &backgroung, &cor, &projectile_list, &texture_projectiles, &qtd_exes, texture_exes, &exes, &qtd_texture_exes, &intervalo, &tempo, &invaders_direction, &total_exes, &outro, &score, &data_score, &var, &pontuacao, &vetor, &shot, &frame);
+            resetar = 0;
+        }
     }
 
     // De-Initialization
