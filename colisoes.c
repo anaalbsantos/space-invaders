@@ -144,8 +144,8 @@ void Unload_All_Textures(Rocket rocket, Texture2D texture_projectiles, Texture2D
 
 void Generate_Level(int nivel, Rocket *rocket, Texture2D *backgroung, Color *cor, Projectile_List *projectile_list, Texture *texture_projectiles, int *qtd_exes, Texture2D texture_exes[], Ex **exes, int *qtd_texture_exes, float *intervalo, float *tempo, int *invaders_direction, int *total_exes, int *outro, unsigned int *score, unsigned int *data_score, int *var, int *pontuacao, int** vetor, int *shot, int* frame){
 
-    const int screenWidth = 1640;
-    const int screenHeight = 924;
+    const int screenWidth = 1024;
+    const int screenHeight = 768;
 
 
     if(nivel == 1){
@@ -175,7 +175,7 @@ void Generate_Level(int nivel, Rocket *rocket, Texture2D *backgroung, Color *cor
         //animação do alien
         *frame = 0;
 
-        SetTargetFPS(80);
+        SetTargetFPS(30);
 
         *intervalo = 5; 
         *tempo = 5; //Tempo pra uma nave atirar
@@ -189,9 +189,9 @@ void Generate_Level(int nivel, Rocket *rocket, Texture2D *backgroung, Color *cor
         cor->a = 123; cor->b = 232; cor->g = 122; cor->r = 255;
         
         //variaveis de controle do personagem
-        *vetor = 0;
+        //*vetor = 0;
         *shot = 0;
-        vetor = calloc(4, sizeof(int));
+        //vetor = calloc(4, sizeof(int));
 
     }
 
